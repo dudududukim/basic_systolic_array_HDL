@@ -1,4 +1,4 @@
-# TPU Systolic Array Design on Xilinx FPGA
+# 🧐TPU Systolic Array Design on Xilinx FPGA
 
 ## Introduction
 
