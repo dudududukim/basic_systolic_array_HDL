@@ -8,7 +8,7 @@ module SRAM_UnifiedBuffer
 )
 (
     input                     clk,          
-    input                     write_enable, 
+    input                     write_enable,
     input  [ADDRESSSIZE-1:0]  address,      
     input  [WORDSIZE-1:0]     data_in,      
     output reg [WORDSIZE-1:0] data_out      
