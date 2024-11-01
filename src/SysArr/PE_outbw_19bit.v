@@ -17,7 +17,7 @@ module PE_outbw_19bit #(
     // sequential part
     dff #(.WIDTH(DATA_IN_BW)) dff_DIN (
         .clk(clk), 
-        .rstn(rstn), 
+        .rstn(rstn),
         .d(DIN), 
         .q(DF_COL)
     );

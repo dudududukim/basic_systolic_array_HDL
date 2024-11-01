@@ -15,7 +15,7 @@ module TOP_systolic_module #(
     output wire signed [PARTIAL_SUM_BW-1:0] result [0:NUM_PE_ROWS-1]
 );
 
-    wire signed [DATA_BW-1:0] df_wire [0:NUM_PE_ROWS];      // in the generate block it interconnects the PEs
+    wire signed [MATRIX_SIZE*DATA_BW-1:0] df_wire [0:NUM_PE_ROWS];      // in the generate block it interconnects the PEs
 
     assign df_wire[0] = DIN;                    // first PE gets the direct Data value
 
