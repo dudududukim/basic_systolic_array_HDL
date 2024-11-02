@@ -15,3 +15,6 @@ for file in "${convert_files[@]}"; do
     output_file="${file%.txt}_hex.txt"  # 변환된 파일 이름: 원본 파일 이름 + "_hex.txt"
     python3 dec_to_hex.py "$file" "$output_file"
 done
+
+# 4th : Convert Weight matrix to fit into 64B FIFO Data in
+python3 converter_weight_fifo.py ./hex/weight_matrix_hex.txt ./hex/weight_matrix_concat.txt 8

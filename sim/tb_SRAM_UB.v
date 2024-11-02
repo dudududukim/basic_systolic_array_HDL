@@ -34,14 +34,14 @@ module tb_SRAM_UB;
     integer i;
 
     initial begin
-        $dumpfile("waveform.vcd");  // VCD 파일 이름 지정
+        $dumpfile("../sim/waveform.vcd");  // VCD 파일 이름 지정
         $dumpvars(0, tb_SRAM_UB);  // 최상위 모듈의 모든 신호를 덤프
     end
 
     // Testbench process
     initial begin
         // Load data from the hex file into data_array
-        $readmemh("vector_generator/hex/setup_result_hex.txt", data_array);  
+        $readmemh("../sim/vector_generator/hex/setup_result_hex.txt", data_array);  
 
         // Initialize signals
         write_enable = 1;
