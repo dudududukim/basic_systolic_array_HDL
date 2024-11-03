@@ -3,16 +3,17 @@ module PE_outbw_19bit #(
     parameter DATA_IN_BW = 8,
     parameter WEIGHT_BW = 8
 ) (
-    input wire clk, we_rl, rstn,                                    // WE_RL : weight_reloading signal -> when this turned on the weight is chagned
-    input wire signed [DATA_IN_BW-1 : 0] DIN,                       // data that should be multplied
+    input wire clk, we_rl, rstn,                                    // WE_RL : weight_reloading signal -> when this turned on the weight is changed
+    input wire signed [DATA_IN_BW-1 : 0] DIN,                       // data that should be multiplied
     input wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_IN,               // partial sum input (19bit in 8x8 MXU)
-    input wire signed[WEIGHT_BW-1 : 0] W,                           // weight that stays constant and refreshed with the WE_RL signal
-    output wire signed [DATA_IN_BW-1 : 0] DF_COL,                    // column direction data flow (DF_COL)
-    output wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_OUT               // partial sum that flows to right direction
+    input wire signed [WEIGHT_BW-1 : 0] W,                          // weight that stays constant and refreshed with the WE_RL signal
+    output wire signed [DATA_IN_BW-1 : 0] DF_COL,                   // column direction data flow (DF_COL)
+    output wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_OUT              // partial sum that flows to right direction
 );
+
     wire signed [WEIGHT_BW-1 : 0] weight;
-    wire signed [DATA_IN_BW+WEIGHT_BW-1 : 0] wx;
-    wire signed [3+DATA_IN_BW+WEIGHT_BW-1 : 0] partial_sum;         // 3 is for the bit width that sum 16bit for 8 times
+    (* use_dsp = "yes" *) wire signed [DATA_IN_BW + WEIGHT_BW - 1 : 0] wx;
+    wire signed [3 + DATA_IN_BW + WEIGHT_BW - 1 : 0] partial_sum;   // 3 is for the bit width that sums 16bit for 8 times
 
     // sequential part
     dff #(.WIDTH(DATA_IN_BW)) dff_DIN (

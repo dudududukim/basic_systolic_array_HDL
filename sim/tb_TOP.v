@@ -66,7 +66,7 @@ module tb_TOP_tpu;
     always #5 clk = ~clk;
 
     initial begin
-        $dumpfile("../sim/waveform_TOPtpu.vcd");
+        $dumpfile("../../sim/waveform_TOPtpu.vcd");
         $dumpvars(0, tb_TOP_tpu);
     end
 
@@ -86,7 +86,7 @@ module tb_TOP_tpu;
         sram_address = 0;
         // Reset 후 30ns 대기
         #30;
-        $readmemh("../sim/vector_generator/hex/setup_result_hex.txt", sram_data_array);
+        $readmemh("../../sim/vector_generator/hex/setup_result_hex.txt", sram_data_array);
 
         // SRAM 초기화 신호
         sram_write_enable = 1;
@@ -113,7 +113,7 @@ module tb_TOP_tpu;
     initial begin
         // Reset 후 30ns 대기
         #30;
-        $readmemh("../sim/vector_generator/hex/weight_matrix_concat.txt", fifo_data_array);
+        $readmemh("../../sim/vector_generator/hex/weight_matrix_concat.txt", fifo_data_array);
         $display("readed data : %h", fifo_data_array[1]);
 
         // FIFO 초기화 신호
