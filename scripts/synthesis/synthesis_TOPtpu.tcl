@@ -13,12 +13,28 @@ create_project proj_1 $outputDir \
 set_property source_mgmt_mode None [current_project]
 
 # Add Verilog source files from src directory
-add_files -norecurse ../../src/basic_modules/*.v
-add_files -norecurse ../../src/controller/*.v
-# add_files -norecurse ../../src/counter/*.v
-add_files -norecurse ../../src/MEM/*.v
-add_files -norecurse ../../src/SysArr/*.v
+# 각 디렉토리의 모든 .v 파일 추가 (file glob 사용)
+foreach file [file glob ../../src/basic_modules/*.v] {
+    add_files -norecurse $file
+}
 
+# foreach file [file glob ../../src/controller/*.v] {
+#     add_files -norecurse $file
+# }
+
+foreach file [file glob ../../src/counter/*.v] {
+    add_files -norecurse $file
+}
+
+foreach file [file glob ../../src/MEM/*.v] {
+    add_files -norecurse $file
+}
+
+foreach file [file glob ../../src/SysArr/*.v] {
+    add_files -norecurse $file
+}
+
+# top module includeing
 add_files -norecurse ../../src/TOP_tpu.v
 set_property top TOP_tpu [current_fileset]
 update_compile_order -fileset sources_1
