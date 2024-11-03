@@ -1,7 +1,7 @@
 # configuration
 # matrix size
 n=8
-convert_files=("setup_result.txt" "weight_matrix.txt" "result_matrix.txt")
+convert_files=("setup_result.txt" "weight_matrix.txt" "result_matrix.txt", "original_matrix.txt")
 
 # 1st : make two Matrix (Weight / Data)
 python3 data_setup.py $n
