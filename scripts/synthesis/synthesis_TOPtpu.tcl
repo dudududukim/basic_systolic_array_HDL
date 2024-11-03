@@ -13,24 +13,23 @@ create_project proj_1 $outputDir \
 set_property source_mgmt_mode None [current_project]
 
 # Add Verilog source files from src directory
-# 각 디렉토리의 모든 .v 파일 추가 (file glob 사용)
-foreach file [file glob ../../src/basic_modules/*.v] {
+foreach file [file search ../../src/basic_modules *.v] {
     add_files -norecurse $file
 }
 
-# foreach file [file glob ../../src/controller/*.v] {
-#     add_files -norecurse $file
-# }
-
-foreach file [file glob ../../src/counter/*.v] {
+foreach file [file search ../../src/controller *.v] {
     add_files -norecurse $file
 }
 
-foreach file [file glob ../../src/MEM/*.v] {
+foreach file [file search ../../src/counter *.v] {
     add_files -norecurse $file
 }
 
-foreach file [file glob ../../src/SysArr/*.v] {
+foreach file [file search ../../src/MEM *.v] {
+    add_files -norecurse $file
+}
+
+foreach file [file search ../../src/SysArr *.v] {
     add_files -norecurse $file
 }
 
