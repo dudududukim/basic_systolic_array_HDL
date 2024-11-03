@@ -13,25 +13,7 @@ create_project proj_1 $outputDir \
 set_property source_mgmt_mode None [current_project]
 
 # Add Verilog source files from src directory
-foreach file [file search ../../src/basic_modules *.v] {
-    add_files -norecurse $file
-}
-
-foreach file [file search ../../src/controller *.v] {
-    add_files -norecurse $file
-}
-
-foreach file [file search ../../src/counter *.v] {
-    add_files -norecurse $file
-}
-
-foreach file [file search ../../src/MEM *.v] {
-    add_files -norecurse $file
-}
-
-foreach file [file search ../../src/SysArr *.v] {
-    add_files -norecurse $file
-}
+source ./file_list.tcl
 
 # top module includeing
 add_files -norecurse ../../src/TOP_tpu.v
