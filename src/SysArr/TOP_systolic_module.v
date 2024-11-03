@@ -34,7 +34,6 @@ module TOP_systolic_module #(
                 WEIGHTS[(8 - i) * WEIGHT_BW-1 -: WEIGHT_BW]
             };
             
-            
             PE_hori #(
                 .WEIGHT_BW(WEIGHT_BW),
                 .DATA_BW(DATA_BW),
