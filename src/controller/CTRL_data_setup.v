@@ -16,9 +16,9 @@ SRAM_UnifiedBuffer #(
 */
 
 module CTRL_data_setup #(
-    parameters
+    // parameters
 ) (
-    ports
+    // ports
 );
     
     TOP_systolic_module #(

@@ -22,7 +22,8 @@ module PE_hori #(
     
     // weight wiring
     assign {w0, w1, w2, w3, w4, w5, w6, w7} = WEIGHTS;
-    assign {df0, df1, df2, df3, df4, df5, df6, df7} = DF;
+    assign {din0, din1, din2, din3, din4, din5, din6, din7} = DIN;
+    assign DF = {df0, df1, df2, df3, df4, df5, df6, df7};
 
     // PE combination part
     PE_outbw_19bit #(.PARTIAL_SUM_BW(19), .DATA_IN_BW(8), .WEIGHT_BW(8))
