@@ -34,10 +34,14 @@ module TOP_tpu #(
     input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
     output wire fifo_empty,
-    output wire fifo_full
+    output wire fifo_full,
+
+    //
+    input wire valid_address
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
+    wire [2:0] count3;                  // for sensing the results timing
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -78,6 +82,12 @@ module TOP_tpu #(
         .WEIGHTS(fifo_data_out),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
-    
+
+    counter_3bit_en counter_3bit(
+        .clk(clk),
+        .rstn(rstn),
+        .enable(!valid_address),
+        .count(count3)
+    );
 
 endmodule

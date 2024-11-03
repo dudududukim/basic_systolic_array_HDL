@@ -14,6 +14,7 @@ module tb_TOP_tpu;
     reg rstn;
     reg start;
     reg we_rl;          // temp
+    reg valid_address;  // temp
     wire end_;
 
     // SRAM 제어 신호
@@ -57,7 +58,8 @@ module tb_TOP_tpu;
         .fifo_data_out(fifo_data_out),
         .fifo_empty(fifo_empty),
         .fifo_full(fifo_full),
-        .we_rl(we_rl)
+        .we_rl(we_rl),
+        .valid_address(valid_address)
     );
 
     initial clk = 0;
@@ -73,6 +75,7 @@ module tb_TOP_tpu;
         rstn = 0;
         start = 0;
         we_rl = 0;
+        valid_address = 0;
         fifo_write_enable = 0;
         #10 rstn = 1;   // Reset 신호를 10ns 후에 설정
         #20;             // 추가 20ns 딜레이 후 SRAM과 FIFO 데이터 로드 시작
@@ -98,10 +101,12 @@ module tb_TOP_tpu;
         // Disable SRAM write
         sram_write_enable = 0;
         #5;
+        valid_address = 1;
         for(i=0; i<=15; i=i+1) begin
             sram_address = i;
             #10;
         end
+        valid_address = 0;
     end
 
     // FIFO 데이터 로드
