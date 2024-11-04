@@ -2,6 +2,9 @@
 add_files -norecurse ../../src/basic_modules/DFF.v
 add_files -norecurse ../../src/basic_modules/Weight_reg.v
 add_files -norecurse ../../src/counter/counter_3bit_en.v
+add_files -norecurse ../../src/controller/CTRL_address_6ibt.v
+add_files -norecurse ../../src/controller/CTRL_data_setup.v
+add_files -norecurse ../../src/controller/CTRL_weight_reload.v
 add_files -norecurse ../../src/MEM/SRAM_UnifiedBuffer.v
 add_files -norecurse ../../src/MEM/Weight_FIFO.v
 add_files -norecurse ../../src/SysArr/PE_hori.v
