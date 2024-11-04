@@ -12,7 +12,7 @@ iverilog -o $output_file \
     ../../src/SysArr/*.v \
     ../../src/TOP_tpu.v \
     ../../src/counter/*.v \
-    # ../src/controller/*.v \
+    ../../src/controller/*.v \
 
 # Run the compiled simulation with vvp
 vvp $output_file

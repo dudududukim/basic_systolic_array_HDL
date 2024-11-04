@@ -16,25 +16,41 @@ SRAM_UnifiedBuffer #(
 */
 
 module CTRL_data_setup #(
-    // parameters
+    parameter DATA_BW = 8,
+    parameter MATRIX_SIZE = 8
 ) (
-    // ports
+    input wire clk, rstn,
+    input wire [DATA_BW*MATRIX_SIZE  -1 : 0] data_in,
+    output wire [DATA_BW*MATRIX_SIZE -1 : 0] data_setup
 );
     
-    TOP_systolic_module #(
-        .WEIGHT_BW(WEIGHT_BW),             
-        .DATA_BW(DATA_BW),                 
-        .PARTIAL_SUM_BW(PARTIAL_SUM_BW),  
-        .MATRIX_SIZE(MATRIX_SIZE),         
-        .NUM_PE_ROWS(NUM_PE_ROWS)          
-    ) systolic_array (
-        .clk(clk),                         
-        .rstn(rstn),                       
-        .we_rl(we_rl),                     
-        .DIN(DIN),                         // top data flow : MATRIX_SIZE * DATA_BW-bit data input (8byte)
-        .WEIGHTS(WEIGHTS),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
-        .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
-    );
+    // the first 8bit directly connect to the first component witout delay
+    assign data_setup[DATA_BW*7 +: DATA_BW] = data_in[DATA_BW*7 +: DATA_BW];
+
+    genvar i, j;
+    generate
+        for (i = 0; i <= 6; i = i + 1) begin : dff_gen
+            wire [DATA_BW-1:0] temp_dff [0:(7-i)-1];
+
+            dff #(.WIDTH(DATA_BW)) dff_first (
+                .clk(clk),
+                .rstn(rstn),
+                .d(data_in[DATA_BW*i +: DATA_BW]),
+                .q(temp_dff[0])
+            );
+
+            for (j = 1; j < (7 - i); j = j + 1) begin : dff_chain
+                dff #(.WIDTH(DATA_BW)) dff_stage (
+                    .clk(clk),
+                    .rstn(rstn),
+                    .d(temp_dff[j-1]),
+                    .q(temp_dff[j])
+                );
+            end
+            assign data_setup[DATA_BW * i +: DATA_BW] = temp_dff[(7-i)-1];
+        end
+    endgenerate
+
 
 
 endmodule

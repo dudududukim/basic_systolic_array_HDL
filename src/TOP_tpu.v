@@ -42,6 +42,8 @@ module TOP_tpu #(
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [2:0] count3;                  // for sensing the results timing
+    wire [6*8 -1 : 0] w_addr;
+    wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -78,7 +80,7 @@ module TOP_tpu #(
         .clk(clk),                         
         .rstn(rstn),                       
         .we_rl(we_rl),                     // weight reload signal 
-        .DIN(sram_data_out),                         // top data flow : MATRIX_SIZE * DATA_BW-bit data input (8byte)
+        .DIN(data_set),                         // top data flow : MATRIX_SIZE * DATA_BW-bit data input (8byte)
         .WEIGHTS(fifo_data_out),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
@@ -88,6 +90,25 @@ module TOP_tpu #(
         .rstn(rstn),
         .enable(!valid_address),
         .count(count3)
+    );
+
+    address_controller_6bit #(
+        .DATA_BW(DATA_BW)
+    ) addr_controller_6bit (
+        .clk(clk),
+        .rstn(rstn),
+        .enable(rstn),
+        .address_6bit(w_addr)
+    );
+
+    CTRL_data_setup #(
+        .DATA_BW(DATA_BW),
+        .MATRIX_SIZE(MATRIX_SIZE)
+    ) data_setup_controller(
+        .clk(clk),
+        .rstn(rstn),
+        .data_in(sram_data_out),
+        .data_setup(data_set)
     );
 
 endmodule

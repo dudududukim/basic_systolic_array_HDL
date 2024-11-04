@@ -86,7 +86,8 @@ module tb_TOP_tpu;
         sram_address = 0;
         // Reset 후 30ns 대기
         #30;
-        $readmemh("../../sim/vector_generator/hex/setup_result_hex.txt", sram_data_array);
+        // $readmemh("../../sim/vector_generator/hex/setup_result_hex.txt", sram_data_array);
+        $readmemh("../../sim/vector_generator/hex/original_matrix_hex.txt", sram_data_array);
 
         // SRAM 초기화 신호
         sram_write_enable = 1;
