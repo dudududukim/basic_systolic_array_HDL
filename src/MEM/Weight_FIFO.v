@@ -26,22 +26,23 @@ module Weight_FIFO #(
     always @(posedge clk or negedge rstn) begin
         if (!rstn) begin
             write_ptr <= 0;
-            count <= 0;
-        end else if (write_enable && !full) begin
-            fifo_mem[write_ptr] <= data_in;
-            write_ptr <= write_ptr + 1;
-            count <= count + 1;
-        end
-    end
-
-    always @(posedge clk or negedge rstn) begin
-        if (!rstn) begin
             read_ptr <= 0;
+            count <= 0;
             data_out <= 0;
-        end else if (read_enable && !empty) begin
-            data_out <= fifo_mem[read_ptr];
-            read_ptr <= read_ptr + 1;
-            count <= count - 1;
+        end else begin
+            // Write operation
+            if (write_enable && !full) begin
+                fifo_mem[write_ptr] <= data_in;
+                write_ptr <= write_ptr + 1;
+                count <= count + 1;
+            end
+
+            // Read operation
+            if (read_enable && !empty) begin
+                data_out <= fifo_mem[read_ptr];
+                read_ptr <= read_ptr + 1;
+                count <= count - 1;
+            end
         end
     end
 
