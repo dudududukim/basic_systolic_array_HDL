@@ -16,8 +16,8 @@ set_property source_mgmt_mode None [current_project]
 source ./file_list.tcl
 
 # top module includeing
-add_files -norecurse ../../src/TOP_tpu.v
-set_property top TOP_tpu [current_fileset]
+add_files -norecurse ../../src/TOP_tpu_synthesis.v
+set_property top TOP_tpu_synthesis [current_fileset]
 update_compile_order -fileset sources_1
 
 #
