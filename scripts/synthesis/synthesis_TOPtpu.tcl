@@ -24,3 +24,6 @@ update_compile_order -fileset sources_1
 # STEP#3: run synthesis and the default utilization report.
 #
 launch_runs synth_1 -jobs 16
+
+# synth_design 실행 후 TOP_systolic_module이 포함되었는지 확인
+report_compile_order -fileset sources_1
