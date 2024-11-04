@@ -37,7 +37,7 @@ module TOP_tpu #(
     output wire fifo_full,
 
     //
-    input wire valid_address
+    input wire valid_address, addr_ctrl_en
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
@@ -97,7 +97,7 @@ module TOP_tpu #(
     ) addr_controller_6bit (
         .clk(clk),
         .rstn(rstn),
-        .enable(rstn),
+        .enable(addr_ctrl_en),
         .address_6bit(w_addr)
     );
 

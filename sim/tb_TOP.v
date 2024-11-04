@@ -36,6 +36,9 @@ module tb_TOP_tpu;
     reg [DATA_WIDTH-1:0] fifo_data_array [0:FIFO_DEPTH-1];
     integer i, j;
 
+    // controller pins
+    reg addr_ctrl_en;
+
     TOP_tpu #(
         .ADDRESSSIZE(ADDRESSSIZE),
         .WORDSIZE(WORDSIZE),
@@ -59,7 +62,8 @@ module tb_TOP_tpu;
         .fifo_empty(fifo_empty),
         .fifo_full(fifo_full),
         .we_rl(we_rl),
-        .valid_address(valid_address)
+        .valid_address(valid_address),
+        .addr_ctrl_en(addr_ctrl_en)
     );
 
     initial clk = 0;
@@ -77,6 +81,7 @@ module tb_TOP_tpu;
         we_rl = 0;
         valid_address = 0;
         fifo_write_enable = 0;
+        addr_ctrl_en=0;
         #10 rstn = 1;   // Reset 신호를 10ns 후에 설정
         #20;             // 추가 20ns 딜레이 후 SRAM과 FIFO 데이터 로드 시작
     end
@@ -93,7 +98,7 @@ module tb_TOP_tpu;
         sram_write_enable = 1;
 
         // Write data into SRAM
-        for (i = 0; i <= 14; i = i + 1) begin
+        for (i = 0; i <= 7; i = i + 1) begin
             sram_data_in = sram_data_array[i];
             sram_address = i;
             #10;
@@ -103,11 +108,15 @@ module tb_TOP_tpu;
         sram_write_enable = 0;
         #5;
         valid_address = 1;
-        for(i=0; i<=15; i=i+1) begin
+        for(i=0; i<=7; i=i+1) begin
             sram_address = i;
             #10;
         end
+        sram_address = 100;         // invalid address number
         valid_address = 0;
+
+        sram_write_enable = 1;
+        addr_ctrl_en =1;
     end
 
     // FIFO 데이터 로드
