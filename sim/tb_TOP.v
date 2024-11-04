@@ -109,7 +109,7 @@ module tb_TOP_tpu;
         #5;
         valid_address = 1;
         for(i=0; i<=7; i=i+1) begin
-            sram_address = i;
+            sram_address  = i;
             #10;
         end
         sram_address = 100;         // invalid address number

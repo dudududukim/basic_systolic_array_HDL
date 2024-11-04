@@ -15,7 +15,7 @@ module TOP_tpu #(
     parameter FIFO_DEPTH = 4,
     parameter NUM_PE_ROWS = 8,
     parameter MATRIX_SIZE = 8,
-    parameter PARTIAL_SUM_BW = 19,
+    parameter PARTIAL_SUM_BW = 20,
     parameter DATA_BW = 8
 
 ) (
@@ -44,6 +44,7 @@ module TOP_tpu #(
     wire [2:0] count3;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -109,6 +110,16 @@ module TOP_tpu #(
         .rstn(rstn),
         .data_in(sram_data_out),
         .data_setup(data_set)
+    );
+
+    CTRL_data_setup #(
+        .DATA_BW(PARTIAL_SUM_BW),
+        .MATRIX_SIZE(MATRIX_SIZE)
+    ) result_sync_controller (
+        .clk(clk),
+        .rstn(rstn),
+        .data_in(result),
+        .data_setup(result_sync)
     );
 
 endmodule

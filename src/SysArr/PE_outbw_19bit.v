@@ -13,7 +13,7 @@ module PE_outbw_19bit #(
 
     wire signed [WEIGHT_BW-1 : 0] weight;
     (* use_dsp = "yes" *) wire signed [DATA_IN_BW + WEIGHT_BW - 1 : 0] wx;
-    wire signed [3 + DATA_IN_BW + WEIGHT_BW - 1 : 0] partial_sum;   // 3 is for the bit width that sums 16bit for 8 times
+    wire signed [PARTIAL_SUM_BW - 1 : 0] partial_sum;   // 3 is for the bit width that sums 16bit for 8 times
 
     // sequential part
     dff #(.WIDTH(DATA_IN_BW)) dff_DIN (
