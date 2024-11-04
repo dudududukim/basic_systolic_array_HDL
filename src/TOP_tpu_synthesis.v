@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu_synthesis #(
+module TOP_tpu #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,
@@ -26,35 +26,29 @@ module TOP_tpu_synthesis #(
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
     input wire [WORDSIZE-1:0] sram_data_in,
-    output wire [WORDSIZE-1:0] sram_data_out,
+    // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
     input wire fifo_write_enable,
     input wire fifo_read_enable,
     input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
-    output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
+    // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
     output wire fifo_empty,
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en
+    input wire valid_address, addr_ctrl_en,
+    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
+    
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [2:0] count3;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
-    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
-    wire q_we_rl;
 
-    dff#(
-        .WIDTH(1)
-    ) dff_we_rl(
-        .clk(clk),
-        .rstn(rstn),
-        .d(we_rl),
-        .q(q_we_rl)
-    )
+    wire [WORDSIZE-1:0] sram_data_out;
+    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -69,7 +63,7 @@ module TOP_tpu_synthesis #(
 
     Weight_FIFO #(
         .WEIGHT_BW(WEIGHT_BW),
-        .FIFO_DEPTH(4)
+        .FIFO_DEPTH(FIFO_DEPTH)
     ) weight_fifo (
         .clk(clk),
         .rstn(rstn),
@@ -90,7 +84,7 @@ module TOP_tpu_synthesis #(
     ) systolic_array (
         .clk(clk),                         
         .rstn(rstn),                       
-        .we_rl(q_we_rl),                     // weight reload signal 
+        .we_rl(we_rl),                     // weight reload signal 
         .DIN(data_set),                         // top data flow : MATRIX_SIZE * DATA_BW-bit data input (8byte)
         .WEIGHTS(fifo_data_out),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
@@ -100,7 +94,7 @@ module TOP_tpu_synthesis #(
         .clk(clk),
         .rstn(rstn),
         .enable(!valid_address),
-        .count(count3)
+        .count(count3)                      // this is also not used yet, synthesis pass
     );
 
     address_controller_6bit #(
@@ -109,7 +103,7 @@ module TOP_tpu_synthesis #(
         .clk(clk),
         .rstn(rstn),
         .enable(addr_ctrl_en),
-        .address_6bit(w_addr)
+        .address_6bit(w_addr)               // not used yet, it could be not included in synthesis results
     );
 
     CTRL_data_setup #(

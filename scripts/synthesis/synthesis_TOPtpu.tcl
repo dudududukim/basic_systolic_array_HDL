@@ -26,4 +26,9 @@ update_compile_order -fileset sources_1
 launch_runs synth_1 -jobs 16
 
 # synth_design 실행 후 TOP_systolic_module이 포함되었는지 확인
-report_compile_order -fileset sources_1
+# report_compile_order -fileset sources_1
+
+# 각 모듈별 cell count, area, utilization을 포함한 report
+wait_on_run synth_1
+open_run synth_1
+report_hierarchy -cell_count -area -utilization -show_leaves -file $outputDir/module_utilization_report.txt
