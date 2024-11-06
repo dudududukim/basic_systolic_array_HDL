@@ -15,7 +15,7 @@ def convert_file_to_hex(file_path):
     for line in lines:
         decimal_values = map(int, line.split())  # 10진수로 변환
         hex_values = [decimal_to_hex_19bit(value) for value in decimal_values]
-        hex_matrix.append(" ".join(hex_values))
+        hex_matrix.append("".join(hex_values))
     
     # 변환된 16진수를 새로운 파일에 저장
     with open("result_matrix_hex.txt", 'w') as file:

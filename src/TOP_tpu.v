@@ -16,7 +16,8 @@ module TOP_tpu #(
     parameter NUM_PE_ROWS = 8,
     parameter MATRIX_SIZE = 8,
     parameter PARTIAL_SUM_BW = 20,
-    parameter DATA_BW = 8
+    parameter DATA_BW = 8,
+    parameter WORDSIZE_Result = 20*8
 
 ) (
     input wire clk, rstn, start, we_rl,
@@ -37,14 +38,17 @@ module TOP_tpu #(
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en
+    input wire valid_address, addr_ctrl_en,
+    input wire [ADDRESSSIZE-1 : 0] sram_result_address,
+    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [2:0] count3;                  // for sensing the results timing
+    wire [3:0] count4;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
-    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
+    wire [4:0] state_count;             // checking the cycle
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -55,6 +59,17 @@ module TOP_tpu #(
         .address(sram_address),
         .data_in(sram_data_in),
         .data_out(sram_data_out)
+    );
+
+    SRAM_Results #(
+        .ADDRESSSIZE(ADDRESSSIZE),
+        .WORDSIZE(WORDSIZE_Result)
+    ) SRAM_Results(
+        .clk(clk),
+        .write_enable(count4[3]),
+        .address({7'b0,count4[2:0]}),
+        .data_in(result_sync_rev),
+        .data_out(sram_result_data_out)
     );
 
     Weight_FIFO #(
@@ -86,11 +101,11 @@ module TOP_tpu #(
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
 
-    counter_3bit_en counter_3bit(
+    counter_4bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
         .enable(!valid_address),
-        .count(count3)
+        .count(count4)
     );
 
     address_controller_6bit #(
@@ -120,6 +135,18 @@ module TOP_tpu #(
         .rstn(rstn),
         .data_in(result),
         .data_setup(result_sync)
+    );
+
+    CTRL_result_reverser #(                 // not sequencial but wiring
+        .WORDSIZE(MATRIX_SIZE*PARTIAL_SUM_BW)
+    ) result_reverser(
+        .d(result_sync),
+        .d_reverse(result_sync_rev)
+    );
+
+    CTRL_state_machine state_coutner(
+        .clk(clk), .rstn(rstn), .start(start),
+        .state_count(state_count), .end_signal(end_)
     );
 
 endmodule

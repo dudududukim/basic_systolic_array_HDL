@@ -9,12 +9,14 @@ module tb_TOP_tpu;
     parameter MATRIX_SIZE = 8;
     parameter FIFO_DEPTH = 4;
     parameter DATA_WIDTH = WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE;       // FIFO 1 row size
+    parameter PARTIAL_SUM_BW = 20;
 
     reg clk;
     reg rstn;
-    reg start;
+    reg mul_start;
     reg we_rl;          // temp
     reg valid_address;  // temp
+    reg end_detected;
     wire end_;
 
     // SRAM 제어 신호
@@ -23,6 +25,8 @@ module tb_TOP_tpu;
     reg [WORDSIZE-1:0] sram_data_in;
     wire [WORDSIZE-1:0] sram_data_out;
 
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
+
     // Weight FIFO 제어 신호
     reg fifo_write_enable;
     reg fifo_read_enable;
@@ -30,10 +34,12 @@ module tb_TOP_tpu;
     wire [DATA_WIDTH-1:0] fifo_data_out;
     wire fifo_empty;
     wire fifo_full;
+    reg [PARTIAL_SUM_BW*MATRIX_SIZE-1:0] expected_results [0:63];
 
     // SRAM과 FIFO 데이터 파일 로드용
     reg [WORDSIZE-1:0] sram_data_array [0:15];
     reg [DATA_WIDTH-1:0] fifo_data_array [0:FIFO_DEPTH-1];
+    reg [ADDRESSSIZE-1:0] sram_results_Address;
     integer i, j;
 
     // controller pins
@@ -49,7 +55,7 @@ module tb_TOP_tpu;
     ) uut (
         .clk(clk),
         .rstn(rstn),
-        .start(start),
+        .start(mul_start),
         .end_(end_),
         .sram_write_enable(sram_write_enable),
         .sram_address(sram_address),
@@ -63,7 +69,10 @@ module tb_TOP_tpu;
         .fifo_full(fifo_full),
         .we_rl(we_rl),
         .valid_address(valid_address),
-        .addr_ctrl_en(addr_ctrl_en)
+        .addr_ctrl_en(addr_ctrl_en),
+
+        .sram_result_address(sram_results_Address),
+        .sram_result_data_out(sram_result_data_out)
     );
 
     initial clk = 0;
@@ -77,11 +86,12 @@ module tb_TOP_tpu;
     // Reset 설정 및 초기화
     initial begin
         rstn = 0;
-        start = 0;
+        mul_start = 0;
         we_rl = 0;
         valid_address = 0;
         fifo_write_enable = 0;
         addr_ctrl_en=0;
+        sram_results_Address = 0;
         #10 rstn = 1;   // Reset 신호를 10ns 후에 설정
         #20;             // 추가 20ns 딜레이 후 SRAM과 FIFO 데이터 로드 시작
     end
@@ -106,7 +116,7 @@ module tb_TOP_tpu;
 
         // Disable SRAM write
         sram_write_enable = 0;
-        #5;
+        #15;
         valid_address = 1;
         for(i=0; i<=7; i=i+1) begin
             sram_address  = i;
@@ -140,15 +150,21 @@ module tb_TOP_tpu;
         end
     end
 
+    // result matrix data load
+    initial begin
+        // result_matrix_hex.txt에서 예상 결과를 불러옴
+        $readmemh("../../sim/vector_generator/hex/result_matrix_hex.txt", expected_results);
+    end
+
     // TPU 시작 신호 및 시뮬레이션 종료
     initial begin
-        // Start TPU operation after SRAM and FIFO loading
-        #105 
-        start = 1;
+        // mul_Start TPU operation after SRAM and FIFO loading
+        #115 
+        mul_start = 1;
         fifo_read_enable = 1;
         #10
         we_rl = 1;
-        start = 0;
+        // mul_start = 0;
         #10
         we_rl = 0;
         fifo_read_enable = 0;
@@ -158,6 +174,26 @@ module tb_TOP_tpu;
         #500
         $display("Simulation completed: End signal received.");
         $finish;
+    end
+
+    // mat mul results check
+    always @(posedge end_) begin
+        end_detected <= 1'b1;
+    end
+
+    always @(posedge clk or negedge rstn) begin
+        if (!rstn) begin
+            sram_results_Address <= 0;
+            end_detected <= 0;
+        end else if (end_detected) begin
+            if (sram_result_data_out !== expected_results[sram_results_Address-2]) begin
+                $display("Error: Mismatch at address %d. Expected: %h, Got: %h", 
+                         sram_results_Address, expected_results[sram_results_Address], sram_result_data_out);
+            end else begin
+                $display("Match at address %d: %h", sram_results_Address, sram_result_data_out);
+            end
+            sram_results_Address <= sram_results_Address + 1;
+        end
     end
 
 endmodule
