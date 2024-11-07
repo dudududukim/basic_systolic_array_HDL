@@ -15,3 +15,6 @@
 - **Python 기반 데이터 생성**: 행렬 데이터 및 가중치 벡터 자동 생성 스크립트 제공
 
 이 프로젝트는 **종합설계 과목**의 일환으로, Xilinx FPGA에서의 구현과 성능 최적화를 목적으로 합니다.
+
+#### Waveform Preview
+![alt text](image.png)
