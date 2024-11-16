@@ -44,8 +44,8 @@ module TOP_tpu #(
 
     
 );
-
-    wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
+    wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [3:0] count4;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
