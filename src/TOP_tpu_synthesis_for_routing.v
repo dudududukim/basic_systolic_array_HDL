@@ -55,11 +55,14 @@ module TOP_tpu #(
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
 
     // to meet fpga I/O setting temporal mux
-    blackbox_fifo_data blackbox_inst (
-        .fifo_data_selection(control_signal), // 제어 신호를 블랙박스에 연결
-        .fifo_data_in(fifo_data_out) // 블랙박스 출력 연결
+    blackbox_fifo_data #(
+        .WEIGHT_BW(WEIGHT_BW),
+        .NUM_PE_ROWS(NUM_PE_ROWS),
+        .MATRIX_SIZE(MATRIX_SIZE)
+    ) blackbox_inst (
+        .fifo_data_selection(fifo_data_selection),
+        .fifo_data_in(fifo_data_out)
     );
-
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
