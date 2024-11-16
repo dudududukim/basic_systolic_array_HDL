@@ -71,7 +71,7 @@ module TOP_tpu #(
         .clk(clk),
         .write_enable(count4[3]),
         .address(sram_address),
-        .data_in(result),
+        .data_in(result_sync),
         .data_out(sram_result_data_out)
     );
 
