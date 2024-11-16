@@ -46,7 +46,7 @@ module TOP_tpu #(
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [2:0] count3;                  // for sensing the results timing
+    wire [3:0] count4;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
 
@@ -69,8 +69,8 @@ module TOP_tpu #(
         .WORDSIZE(WORDSIZE_Result)
     ) SRAM_Results(
         .clk(clk),
-        .write_enable(sram_write_enable),
-        .address(sram_address),
+        .write_enable(count4[3]),
+        .address({7'b0,count4[2:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
@@ -104,11 +104,11 @@ module TOP_tpu #(
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
 
-    counter_3bit_en counter_3bit(
+    counter_4bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
         .enable(!valid_address),
-        .count(count3)                      // this is also not used yet, synthesis pass
+        .count(count4)
     );
 
     address_controller_6bit #(
