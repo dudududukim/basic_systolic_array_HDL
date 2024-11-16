@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu #(
+module TOP_tpu_synthesis_for_routing #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,
@@ -38,9 +38,7 @@ module TOP_tpu #(
 
     //
     input wire valid_address, addr_ctrl_en,
-    // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
-    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
-
+    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
     
 );
 
@@ -61,17 +59,6 @@ module TOP_tpu #(
         .address(sram_address),
         .data_in(sram_data_in),
         .data_out(sram_data_out)
-    );
-
-    SRAM_Results #(
-        .ADDRESSSIZE(ADDRESSSIZE),
-        .WORDSIZE(WORDSIZE_Result)
-    ) SRAM_Results(
-        .clk(clk),
-        .write_enable(sram_write_enable),
-        .address(sram_address),
-        .data_in(result),
-        .data_out(sram_result_data_out)
     );
 
     Weight_FIFO #(
