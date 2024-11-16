@@ -16,7 +16,8 @@ module TOP_tpu #(
     parameter NUM_PE_ROWS = 8,
     parameter MATRIX_SIZE = 8,
     parameter PARTIAL_SUM_BW = 20,
-    parameter DATA_BW = 8
+    parameter DATA_BW = 8,
+    parameter WORDSIZE_Result = 20*8
 
 ) (
     input wire clk, rstn, start, we_rl,
