@@ -26,7 +26,7 @@ module TOP_tpu_synthesis_for_routing #(
     // UB pins
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
-    // input wire [WORDSIZE-1:0] sram_data_in,
+    input wire [WORDSIZE-1:0] sram_data_in,
     // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
@@ -38,7 +38,7 @@ module TOP_tpu_synthesis_for_routing #(
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en,
+    input wire valid_address,
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
     output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 
@@ -79,7 +79,7 @@ module TOP_tpu_synthesis_for_routing #(
         .clk(clk),
         .write_enable(sram_write_enable),
         .address(sram_address),
-        .data_in(),
+        .data_in(sram_data_in),
         .data_out(sram_data_out)
     );
 
