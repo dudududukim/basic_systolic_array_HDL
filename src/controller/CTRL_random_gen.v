@@ -15,8 +15,8 @@ module CTRL_random_gen #(
     wire feedback = lfsr[63] ^ lfsr[62] ^ lfsr[60] ^ lfsr[59];
 
     // Random generation process
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             lfsr <= 64'hACE1; // Initial seed value (non-zero)
             random_out <= 512'b0;
         end else begin

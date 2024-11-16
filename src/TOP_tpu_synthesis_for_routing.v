@@ -26,7 +26,7 @@ module TOP_tpu_synthesis_for_routing #(
     // UB pins
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
-    input wire [WORDSIZE-1:0] sram_data_in,
+    // input wire [WORDSIZE-1:0] sram_data_in,
     // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
@@ -44,7 +44,7 @@ module TOP_tpu_synthesis_for_routing #(
 
     
 );
-    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in;
+    // wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in;
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
     wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [3:0] count4;                  // for sensing the results timing
@@ -64,13 +64,13 @@ module TOP_tpu_synthesis_for_routing #(
     //     .fifo_data_in(fifo_data_in)
     // );
     CTRL_random_gen #(
-        .MATRIX_SIZE(MATRIX_SIZE),
+        .WEIGHT_BW(WEIGHT_BW),
         .NUM_PE_ROWS(NUM_PE_ROWS),
         .MATRIX_SIZE(MATRIX_SIZE)
     ) random_fifo_maker (
-        .clk(clk), .rstn(rstn),
+        .clk(clk), .reset(rstn),
         .random_out(fifo_data_in)
-    )
+    );
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -79,7 +79,7 @@ module TOP_tpu_synthesis_for_routing #(
         .clk(clk),
         .write_enable(sram_write_enable),
         .address(sram_address),
-        .data_in(sram_data_in),
+        .data_in(),
         .data_out(sram_data_out)
     );
 
@@ -102,7 +102,7 @@ module TOP_tpu_synthesis_for_routing #(
         .rstn(rstn),
         .write_enable(fifo_write_enable),
         .read_enable(fifo_read_enable),
-        .data_in(fifo_data_in),
+        .data_in(),
         .data_out(fifo_data_out),
         .empty(fifo_empty),
         .full(fifo_full)
