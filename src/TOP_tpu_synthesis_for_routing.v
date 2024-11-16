@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu #(
+module TOP_tpu_synthesis_for_routing #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,
@@ -32,7 +32,7 @@ module TOP_tpu #(
     // FIFO pins
     input wire fifo_write_enable,
     input wire fifo_read_enable,
-    input wire fifo_data_selection,
+    // input wire fifo_data_selection,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
     output wire fifo_empty,
     output wire fifo_full,
@@ -44,7 +44,7 @@ module TOP_tpu #(
 
     
 );
-    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
+    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in;
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
     wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [3:0] count4;                  // for sensing the results timing
@@ -55,14 +55,22 @@ module TOP_tpu #(
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
 
     // to meet fpga I/O setting temporal mux
-    blackbox_fifo_data #(
-        .WEIGHT_BW(WEIGHT_BW),
+    // blackbox_fifo_data #(
+    //     .WEIGHT_BW(WEIGHT_BW),
+    //     .NUM_PE_ROWS(NUM_PE_ROWS),
+    //     .MATRIX_SIZE(MATRIX_SIZE)
+    // ) blackbox_inst (
+    //     .fifo_data_selection(fifo_data_selection),
+    //     .fifo_data_in(fifo_data_in)
+    // );
+    CTRL_random_gen #(
+        .MATRIX_SIZE(MATRIX_SIZE),
         .NUM_PE_ROWS(NUM_PE_ROWS),
         .MATRIX_SIZE(MATRIX_SIZE)
-    ) blackbox_inst (
-        .fifo_data_selection(fifo_data_selection),
-        .fifo_data_in(fifo_data_out)
-    );
+    ) random_fifo_maker (
+        .clk(clk), .rstn(rstn),
+        .random_out(fifo_data_in)
+    )
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
