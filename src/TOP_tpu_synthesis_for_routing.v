@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu_synthesis_for_routing #(
+module TOP_tpu #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,
@@ -16,7 +16,8 @@ module TOP_tpu_synthesis_for_routing #(
     parameter NUM_PE_ROWS = 8,
     parameter MATRIX_SIZE = 8,
     parameter PARTIAL_SUM_BW = 20,
-    parameter DATA_BW = 8
+    parameter DATA_BW = 8,
+    parameter WORDSIZE_Result = 20*8
 
 ) (
     input wire clk, rstn, start, we_rl,
@@ -31,24 +32,34 @@ module TOP_tpu_synthesis_for_routing #(
     // FIFO pins
     input wire fifo_write_enable,
     input wire fifo_read_enable,
-    input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
+    input wire fifo_data_selection,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
     output wire fifo_empty,
     output wire fifo_full,
 
     //
     input wire valid_address, addr_ctrl_en,
-    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
+    // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
+    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
+
     
 );
-
-    wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [2:0] count3;                  // for sensing the results timing
+    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
+    wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
+    wire [3:0] count4;                  // for sensing the results timing
     wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
 
     wire [WORDSIZE-1:0] sram_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
+
+    // to meet fpga I/O setting temporal mux
+    blackbox_fifo_data blackbox_inst (
+        .fifo_data_selection(control_signal), // 제어 신호를 블랙박스에 연결
+        .fifo_data_in(fifo_data_out) // 블랙박스 출력 연결
+    );
+
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -59,6 +70,17 @@ module TOP_tpu_synthesis_for_routing #(
         .address(sram_address),
         .data_in(sram_data_in),
         .data_out(sram_data_out)
+    );
+
+    SRAM_Results #(
+        .ADDRESSSIZE(ADDRESSSIZE),
+        .WORDSIZE(WORDSIZE_Result)
+    ) SRAM_Results(
+        .clk(clk),
+        .write_enable(count4[3]),
+        .address(sram_address),
+        .data_in(result_sync),
+        .data_out(sram_result_data_out)
     );
 
     Weight_FIFO #(
@@ -90,11 +112,11 @@ module TOP_tpu_synthesis_for_routing #(
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
 
-    counter_3bit_en counter_3bit(
+    counter_4bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
         .enable(!valid_address),
-        .count(count3)                      // this is also not used yet, synthesis pass
+        .count(count4)
     );
 
     address_controller_6bit #(
