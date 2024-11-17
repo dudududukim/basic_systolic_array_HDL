@@ -25,9 +25,9 @@ module PE_hori #(
             wire signed [DATA_BW-1 : 0] df;
 
             // Dynamically assign sliced input values
-            assign din = DIN[(i+1)*DATA_BW-1 : i*DATA_BW];
-            assign w = WEIGHTS[(i+1)*WEIGHT_BW-1 : i*WEIGHT_BW];
-            assign DF[(i+1)*DATA_BW-1 : i*DATA_BW] = df;
+            assign din = DIN[(MATRIX_SIZE-i-1)*DATA_BW +: DATA_BW];
+            assign w = WEIGHTS[(MATRIX_SIZE-i-1)*WEIGHT_BW +: WEIGHT_BW];
+            assign DF[(MATRIX_SIZE-i-1)*DATA_BW +: DATA_BW] = df;
 
             // PE instances
             if (i == 0) begin

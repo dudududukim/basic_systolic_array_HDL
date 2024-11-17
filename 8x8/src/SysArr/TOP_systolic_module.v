@@ -1,8 +1,8 @@
 module TOP_systolic_module #(
     parameter WEIGHT_BW = 8,
     parameter DATA_BW = 8,
-    parameter PARTIAL_SUM_BW = 20,
-    parameter MATRIX_SIZE = 8, // 128x128 확장
+    parameter PARTIAL_SUM_BW = 19,
+    parameter MATRIX_SIZE = 8,
     parameter NUM_PE_ROWS = 8
 ) (
     input wire clk,
@@ -22,15 +22,13 @@ module TOP_systolic_module #(
     genvar i, j;
     generate
         for (i = 0; i < NUM_PE_ROWS; i = i + 1) begin : pe_row
-            // 행 별로 사용할 가중치 슬라이싱
             wire [MATRIX_SIZE*WEIGHT_BW-1 : 0] selected_weights;
-            
-            for (j = 0; j < MATRIX_SIZE; j = j + 1) begin : weight_slicing
-                assign selected_weights[(j+1)*WEIGHT_BW-1 -: WEIGHT_BW] =
-                    WEIGHTS[((i*MATRIX_SIZE) + j + 1)*WEIGHT_BW-1 -: WEIGHT_BW];
-            end
 
-            // PE_hori 인스턴스 생성
+            for (j = 0; j < MATRIX_SIZE; j = j + 1) begin : select_weights_gen
+                assign selected_weights[(MATRIX_SIZE-j-1)*WEIGHT_BW +: WEIGHT_BW] =
+                    WEIGHTS[(MATRIX_SIZE*NUM_PE_ROWS - MATRIX_SIZE*j - i -1)*WEIGHT_BW +: WEIGHT_BW];
+            end
+                
             PE_hori #(
                 .WEIGHT_BW(WEIGHT_BW),
                 .DATA_BW(DATA_BW),
@@ -40,9 +38,9 @@ module TOP_systolic_module #(
                 .clk(clk),
                 .rstn(rstn),
                 .we_rl(we_rl),
-                .DIN(df_wire[i]),  // 현재 행의 데이터
-                .WEIGHTS(selected_weights),  // 슬라이싱된 가중치
-                .DF(df_wire[i+1]),  // 다음 행으로 데이터 전달
+                .DIN(df_wire[i]),  // current dataflow
+                .WEIGHTS(selected_weights),        // weight mapping
+                .DF(df_wire[i+1]),  // next pe dataflow (latency 1cycle)
                 .result(result[(i+1)*PARTIAL_SUM_BW-1 -: PARTIAL_SUM_BW])
             );
         end

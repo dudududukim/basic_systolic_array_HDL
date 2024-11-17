@@ -73,7 +73,9 @@ module TOP_tpu #(
 
     Weight_FIFO #(
         .WEIGHT_BW(WEIGHT_BW),
-        .FIFO_DEPTH(4)
+        .FIFO_DEPTH(FIFO_DEPTH),
+        .NUM_PE_ROWS(NUM_PE_ROWS),
+        .MATRIX_SIZE(MATRIX_SIZE)
     ) weight_fifo (
         .clk(clk),
         .rstn(rstn),

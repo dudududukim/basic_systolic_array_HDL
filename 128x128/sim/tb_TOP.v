@@ -5,6 +5,7 @@ module tb_TOP_tpu;
     parameter ADDRESSSIZE = 10;
     parameter WORDSIZE = 8*128;
     parameter WEIGHT_BW = 8;
+    parameter DATA_BW = 8;
     parameter NUM_PE_ROWS = 128;
     parameter MATRIX_SIZE = 128;
     parameter FIFO_DEPTH = 4;
@@ -89,6 +90,7 @@ module tb_TOP_tpu;
 
     // Reset 설정 및 초기화
     initial begin
+        $display("[%0t] Testbench started!", $time);
         rstn = 0;
         mul_start = 0;
         we_rl = 0;
@@ -116,6 +118,7 @@ module tb_TOP_tpu;
             sram_data_in = sram_data_array[i];
             sram_address = i;
             #10;
+            $display("[%0t] SRAM[%0d] <= %h", $time, sram_address, sram_data_in);
         end
 
         // Disable SRAM write
