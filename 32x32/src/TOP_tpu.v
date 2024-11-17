@@ -10,14 +10,14 @@ TOP tpu module composition
 
 module TOP_tpu #(
     parameter ADDRESSSIZE = 10,
-    parameter WORDSIZE = 64,
+    parameter WORDSIZE = 8*32,
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
-    parameter NUM_PE_ROWS = 8,
-    parameter MATRIX_SIZE = 8,
-    parameter PARTIAL_SUM_BW = 20,
+    parameter NUM_PE_ROWS = 32,
+    parameter MATRIX_SIZE = 32,
+    parameter PARTIAL_SUM_BW = 24,
     parameter DATA_BW = 8,
-    parameter WORDSIZE_Result = 20*8
+    parameter WORDSIZE_Result = 24*32
 
 ) (
     input wire clk, rstn, start, we_rl,
