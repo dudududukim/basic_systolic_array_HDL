@@ -42,6 +42,7 @@ module TOP_tpu_synthesis #(
     output wire done
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [5:0] count6;                  // for sensing the results timing
@@ -77,7 +78,7 @@ module TOP_tpu_synthesis #(
     ) result_done(
         .din(sram_result_data_out),
         .dout(done)
-    )
+    );
 
     Weight_FIFO #(
         .WEIGHT_BW(WEIGHT_BW),

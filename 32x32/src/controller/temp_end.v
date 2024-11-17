@@ -3,7 +3,7 @@ module temp_end #(
     parameter MATRIX_SIZE = 32
 )(
     input wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] din,
-    output wire done
+    output wire dout
 );
-    assign done = din[0];
+    assign dout = &din;
 endmodule
