@@ -1,67 +1,56 @@
-# STEP#1: Define project and output directories
+# Define directories
 set outputDir ../../output/Created_Data/systolic_project_32x32
 set routingOutputDir $outputDir/routing
 
-# Create output directories if not exist
+# Create directories
 file mkdir $outputDir
 file mkdir $routingOutputDir
 
-# STEP#2: Open existing project
+# Open project
 open_project $outputDir/proj_1.xpr
 
-
-# STEP#3: Open synthesized design
+# Open synthesized design
 open_run synth_1
-puts "Synthesized design loaded successfully."
+puts "Synthesized design loaded."
 
-# STEP#4: Run place and route
-# Place the design
-puts "Starting placement..."
+# Placement
 place_design -directive Default
 puts "Placement completed."
 
-# Route the design
-puts "Starting routing..."
+# Routing
 route_design -directive Default
 puts "Routing completed."
 
-# STEP#5: Generate routing-related reports
-# Timing summary report  -> can't make xdc file(too hard)
-# report_timing_summary -file $routingOutputDir/timing_summary.txt
-# puts "Timing summary report generated."
+# Timing summary report  -> can't make xdc file(hard)
+set clk_pin [get_ports clk]
+create_clock -period 10.0 $clk_pin
+report_timing_summary -file $routingOutputDir/timing_summary.txt
+puts "Timing summary report generated."
 
-# Utilization report after routing
+# Generate reports
 report_utilization -file $routingOutputDir/utilization_after_routing.txt
-puts "Utilization report after routing generated."
+puts "Utilization report done."
 
-# Detailed timing report
-report_timing -file $routingOutputDir/detailed_timing_report.txt
-puts "Detailed timing report generated."
+report_timing -delay_type min_max -from $clk_pin -file $routingOutputDir/detailed_timing_report.txt
+puts "Timing report done."
 
-# Routed resource report
 report_route_status -file $routingOutputDir/route_status.txt
-puts "Routed resource report generated."
+puts "Route status report done."
 
-# Design rule check (DRC) report
 report_drc -file $routingOutputDir/drc_report.txt
-puts "DRC report generated."
+puts "DRC report done."
 
-# Save the checkpoint after routing
 write_checkpoint -force $routingOutputDir/final_routed_design.dcp
-puts "Checkpoint saved after routing."
+puts "Checkpoint saved."
 
-# Optional: Save power report
 report_power -file $routingOutputDir/power_report.txt
-puts "Power report generated."
+puts "Power report done."
 
-# Optional: Save IO report
 report_io -file $routingOutputDir/io_report.txt
-puts "IO report generated."
+puts "IO report done."
 
-# STEP#6: Generate bitstream
-# puts "Generating bitstream..."
+# Optional bitstream generation
 # write_bitstream -force $routingOutputDir/final_bitstream.bit
-# puts "Bitstream generation completed."
+# puts "Bitstream generation done."
 
-# Final message to indicate completion
-puts "Routing, reporting, and bitstream generation completed successfully. Outputs saved in: $routingOutputDir"
+puts "Process completed. Outputs in: $routingOutputDir"
