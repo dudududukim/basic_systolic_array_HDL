@@ -1,5 +1,5 @@
 # STEP#1: Define project and output directories
-set outputDir ../../output/Created_Data/systolic_project
+set outputDir ../../output/Created_Data/systolic_project_32x32
 set routingOutputDir $outputDir/routing
 
 # Create output directories if not exist
