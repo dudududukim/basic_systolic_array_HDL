@@ -39,8 +39,8 @@ module TOP_tpu_synthesis #(
 
     //
     input wire valid_address,
-    input wire [ADDRESSSIZE-1 : 0] sram_result_address,
-    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
+    output wire done
+    // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
@@ -70,6 +70,14 @@ module TOP_tpu_synthesis #(
         .data_in(result_sync_rev),
         .data_out(sram_result_data_out)
     );
+
+    temp_end #(
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .PARTIAL_SUM_BW(PARTIAL_SUM_BW)
+    ) result_done(
+        .din(sram_result_data_out),
+        .dout(done)
+    )
 
     Weight_FIFO #(
         .WEIGHT_BW(WEIGHT_BW),

@@ -9,6 +9,7 @@ add_files -norecurse ../../src/controller/CTRL_random_gen.v
 add_files -norecurse ../../src/controller/CTRL_result_reverser.v
 add_files -norecurse ../../src/controller/CTRL_state_machine.v
 add_files -norecurse ../../src/controller/CTRL_weight_reload.v
+add_files -norecurse ../../src/controller/temp_end.v
 add_files -norecurse ../../src/MEM/SRAM_Results.v
 add_files -norecurse ../../src/MEM/SRAM_UnifiedBuffer.v
 add_files -norecurse ../../src/MEM/Weight_FIFO.v
