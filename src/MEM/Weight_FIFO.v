@@ -1,5 +1,3 @@
-// weight FIFO to supply into Systolic PEs
-
 module Weight_FIFO #(
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
@@ -7,7 +5,7 @@ module Weight_FIFO #(
     parameter MATRIX_SIZE = 8
 ) (
     input wire clk,
-    input wire rstn,
+    input wire rstn, // 동기 리셋으로 수정
     input wire write_enable,
     input wire read_enable,
     input wire [WEIGHT_BW*NUM_PE_ROWS*MATRIX_SIZE-1:0] data_in,
@@ -16,14 +14,16 @@ module Weight_FIFO #(
     output wire full
 );
 
-    reg [WEIGHT_BW*NUM_PE_ROWS*MATRIX_SIZE-1:0] fifo_mem [0:FIFO_DEPTH-1];
+    // FIFO 메모리를 BRAM으로 강제 매핑
+    (* ram_style = "block" *) reg [WEIGHT_BW*NUM_PE_ROWS*MATRIX_SIZE-1:0] fifo_mem [0:FIFO_DEPTH-1];
     reg [$clog2(FIFO_DEPTH)-1:0] read_ptr, write_ptr;
-    reg [FIFO_DEPTH:0] count;
+    reg [$clog2(FIFO_DEPTH+1)-1:0] count;
 
     assign empty = (count == 0);
     assign full = (count == FIFO_DEPTH);
 
-    always @(posedge clk or negedge rstn) begin
+    // 동기 리셋으로 리셋 로직 변경
+    always @(posedge clk) begin
         if (!rstn) begin
             write_ptr <= 0;
             read_ptr <= 0;
