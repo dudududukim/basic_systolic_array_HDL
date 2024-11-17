@@ -32,11 +32,11 @@ module PE_hori #(
             // PE instances
             if (i == 0) begin
                 // First PE, initialize PSUM_IN to 0
-                PE_outbw_19bit #(
+                PE #(
                     .PARTIAL_SUM_BW(PARTIAL_SUM_BW), 
                     .DATA_IN_BW(DATA_BW), 
                     .WEIGHT_BW(WEIGHT_BW)
-                ) PE (
+                ) PE_inst (
                     .clk(clk), 
                     .we_rl(we_rl), 
                     .rstn(rstn), 
@@ -48,11 +48,11 @@ module PE_hori #(
                 );
             end else begin
                 // Other PEs take previous PE's psum_out as PSUM_IN
-                PE_outbw_19bit #(
+                PE #(
                     .PARTIAL_SUM_BW(PARTIAL_SUM_BW), 
                     .DATA_IN_BW(DATA_BW), 
                     .WEIGHT_BW(WEIGHT_BW)
-                ) PE (
+                ) PE_inst (
                     .clk(clk), 
                     .we_rl(we_rl), 
                     .rstn(rstn), 

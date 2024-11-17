@@ -1,4 +1,4 @@
-module PE_outbw_19bit #(
+module PE #(
     parameter PARTIAL_SUM_BW = 19,
     parameter DATA_IN_BW = 8,
     parameter WEIGHT_BW = 8

@@ -1,7 +1,7 @@
 #
 # STEP#1: define the output directory area.
 #
-set outputDir ../../output/Created_Data/systolic_project_routing
+set outputDir ../../output/Created_Data/systolic_project_32x32
 file mkdir $outputDir
 create_project proj_1 $outputDir \
   -part xcu250-figd2104-2L-e -force
@@ -16,8 +16,8 @@ set_property source_mgmt_mode None [current_project]
 source ./file_list.tcl
 
 # top module includeing
-add_files -norecurse ../../src/TOP_tpu_synthesis_for_routing.v
-set_property top TOP_tpu_synthesis_for_routing [current_fileset]
+add_files -norecurse ../../src/TOP_tpu_synthesis.v
+set_property top TOP_tpu_synthesis [current_fileset]
 update_compile_order -fileset sources_1
 
 #
