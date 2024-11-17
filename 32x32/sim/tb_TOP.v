@@ -194,7 +194,7 @@ module tb_TOP_tpu;
         end else if (end_detected) begin
             if (sram_result_data_out !== expected_results[sram_results_Address]) begin
                 $display("Error: Mismatch at address %d. Expected: %h, Got: %h", 
-                         sram_results_Address, expected_results[sram_results_Address-2], sram_result_data_out);
+                         sram_results_Address, expected_results[sram_results_Address], sram_result_data_out);
             end else begin
                 $display("Match at address %d: %h", sram_results_Address, sram_result_data_out);
             end
