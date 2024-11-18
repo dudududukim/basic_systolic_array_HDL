@@ -1,5 +1,5 @@
 # Define directories
-set outputDir ../../output/Created_Data/systolic_project_32x32
+set outputDir ../../output/Created_Data/systolic_project__64x64
 set routingOutputDir $outputDir/routing
 
 # Create directories

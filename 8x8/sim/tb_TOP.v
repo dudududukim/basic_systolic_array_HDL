@@ -168,12 +168,6 @@ module tb_TOP_tpu;
         #10
         we_rl = 0;
         fifo_read_enable = 0;
-
-
-        // Wait for TPU end signal
-        #500
-        $display("Simulation completed: End signal received.");
-        $finish;
     end
 
     // mat mul results check
@@ -193,6 +187,11 @@ module tb_TOP_tpu;
                 $display("Match at address %d: %h", sram_results_Address, sram_result_data_out);
             end
             sram_results_Address <= sram_results_Address + 1;
+
+            if (sram_results_Address == 10'd7) begin // 여기서 'hFF는 종료하고 싶은 주소 값
+                $display("Simulation finished at address %d", sram_results_Address);
+                $finish;
+            end
         end
     end
 

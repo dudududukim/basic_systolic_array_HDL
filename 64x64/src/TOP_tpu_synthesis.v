@@ -8,16 +8,16 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu_synthesis #(
+module TOP_tpu #(
     parameter ADDRESSSIZE = 10,
-    parameter WORDSIZE = 8*32,
+    parameter WORDSIZE = 8*64,
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
-    parameter NUM_PE_ROWS = 32,
-    parameter MATRIX_SIZE = 32,
+    parameter NUM_PE_ROWS = 64,
+    parameter MATRIX_SIZE = 64,
     parameter PARTIAL_SUM_BW = 24,
     parameter DATA_BW = 8,
-    parameter WORDSIZE_Result = 24*32
+    parameter WORDSIZE_Result = 24*64
 
 ) (
     input wire clk, rstn, start, we_rl,
@@ -27,7 +27,7 @@ module TOP_tpu_synthesis #(
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
     // input wire [WORDSIZE-1:0] sram_data_in,
-    output wire [WORDSIZE-1:0] sram_data_out,
+    // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
     input wire fifo_write_enable,
@@ -39,16 +39,19 @@ module TOP_tpu_synthesis #(
 
     //
     input wire valid_address,
+    input wire [ADDRESSSIZE-1 : 0] sram_result_address,
     output wire done
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
+
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
+    wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [5:0] count6;                  // for sensing the results timing
+    wire [6:0] count7;                  // for sensing the results timing
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
-    wire [6:0] state_count;             // checking the cycle
+    wire [7:0] state_count;             // checking the cycle
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -66,8 +69,8 @@ module TOP_tpu_synthesis #(
         .WORDSIZE(WORDSIZE_Result)
     ) SRAM_Results(
         .clk(clk),
-        .write_enable(count6[5]),
-        .address({5'b0,count6[4:0]}),
+        .write_enable(count7[6]),
+        .address({4'b0,count7[5:0]}),
         .data_in(result_sync_rev),
         .data_out(sram_result_data_out)
     );
@@ -111,11 +114,11 @@ module TOP_tpu_synthesis #(
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
 
-    counter_6bit_en counter_6bit(
+    counter_7bit_en counter_7bit(
         .clk(clk),
         .rstn(rstn),
         .enable(!valid_address),
-        .count(count6)
+        .count(count7)
     );
 
     CTRL_data_setup #(

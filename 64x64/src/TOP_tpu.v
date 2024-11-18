@@ -14,7 +14,7 @@ module TOP_tpu #(
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
     parameter NUM_PE_ROWS = 128,
-    parameter MATRIX_SIZE = 127,
+    parameter MATRIX_SIZE = 128,
     parameter PARTIAL_SUM_BW = 24,
     parameter DATA_BW = 8,
     parameter WORDSIZE_Result = 24*128
