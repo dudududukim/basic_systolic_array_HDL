@@ -38,16 +38,18 @@ module TOP_tpu #(
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en,
+    input wire valid_address,
+    output wire done
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync
-    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
+    // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 
     
 );
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
     wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [3:0] count4;                  // for sensing the results timing
-    wire [6*8 -1 : 0] w_addr;
+    // wire [6*8 -1 : 0] w_addr;
     wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
 
     wire [WORDSIZE-1:0] sram_data_out;
@@ -73,6 +75,14 @@ module TOP_tpu #(
         .address(sram_address),
         .data_in(result_sync),
         .data_out(sram_result_data_out)
+    );
+
+    temp_end #(
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .PARTIAL_SUM_BW(PARTIAL_SUM_BW)
+    ) result_done(
+        .din(sram_result_data_out),
+        .dout(done)
     );
 
     Weight_FIFO #(
