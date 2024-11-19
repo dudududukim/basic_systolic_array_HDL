@@ -23,7 +23,7 @@ module PE #(
         .q(DF_COL)
     );
     
-    dff #(.WIDTH(PARTIAL_SUM_BW)) dff_PSUM_OUT (
+    (* DONT_TOUCH = "TRUE" *) dff #(.WIDTH(PARTIAL_SUM_BW)) dff_PSUM_OUT (
         .clk(clk), 
         .rstn(rstn), 
         .d(partial_sum), 

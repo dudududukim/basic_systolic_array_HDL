@@ -5,7 +5,7 @@ output_file="../../sim/tb_TOP.vvp"
 waveform_file="../../sim/waveform_TOPtpu.vcd"
 
 # Compile Verilog files with iverilog
-iverilog -o $output_file \
+iverilog -g2005-sv -o $output_file \
     ../../sim/tb_TOP.v \
     ../../src/MEM/*.v \
     ../../src/basic_modules/*.v \
