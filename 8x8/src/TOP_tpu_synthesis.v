@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_tpu #(
+module TOP_tpu_synthesis #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,

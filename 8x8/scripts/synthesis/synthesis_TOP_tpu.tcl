@@ -1,7 +1,7 @@
 #
 # STEP#1: define the output directory area.
 #
-set outputDir ../../output/Created_Data/systolic_project
+set outputDir ../../output/Created_Data/systolic_project_8x8
 file mkdir $outputDir
 create_project proj_1 $outputDir \
   -part xcu250-figd2104-2L-e -force
