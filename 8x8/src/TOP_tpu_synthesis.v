@@ -94,9 +94,7 @@ module TOP_tpu #(
         .write_enable(fifo_write_enable),
         .read_enable(fifo_read_enable),
         .data_in(),
-        .data_out(fifo_data_out),
-        .empty(fifo_empty),
-        .full(fifo_full)
+        .data_out(fifo_data_out)
     );
 
     TOP_systolic_module #(
