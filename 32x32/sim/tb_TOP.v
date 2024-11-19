@@ -70,8 +70,6 @@ module tb_TOP_tpu;
         .fifo_read_enable(fifo_read_enable),
         .fifo_data_in(fifo_data_in),
         .fifo_data_out(fifo_data_out),
-        .fifo_empty(fifo_empty),
-        .fifo_full(fifo_full),
         .we_rl(we_rl),
         .valid_address(valid_address),
 
