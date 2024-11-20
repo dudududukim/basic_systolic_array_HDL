@@ -31,7 +31,7 @@ module PE #(
     );
 
     // sequential part for weight reloading
-    weight_reg #(.WEIGHT_BW(WEIGHT_BW)) u_weight_reg (
+    (* DONT_TOUCH = "TRUE" *) weight_reg #(.WEIGHT_BW(WEIGHT_BW)) u_weight_reg (
         .clk(clk),
         .rstn(rstn),
         .we_rl(we_rl),

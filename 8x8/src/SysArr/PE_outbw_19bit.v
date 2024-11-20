@@ -23,7 +23,7 @@ module PE_outbw_19bit #(
         .q(DF_COL)
     );
     
-    dff #(.WIDTH(PARTIAL_SUM_BW)) dff_PSUM_OUT (
+    (* DONT_TOUCH = "TRUE" *) dff #(.WIDTH(PARTIAL_SUM_BW)) dff_PSUM_OUT (
         .clk(clk), 
         .rstn(rstn), 
         .d(partial_sum), 
@@ -31,7 +31,7 @@ module PE_outbw_19bit #(
     );
 
     // sequential part for weight reloading
-    weight_reg #(.WEIGHT_BW(WEIGHT_BW)) u_weight_reg (
+    (* DONT_TOUCH = "TRUE" *) weight_reg #(.WEIGHT_BW(WEIGHT_BW)) u_weight_reg (
         .clk(clk),
         .rstn(rstn),
         .we_rl(we_rl),
