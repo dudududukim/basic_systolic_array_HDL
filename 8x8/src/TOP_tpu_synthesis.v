@@ -86,7 +86,7 @@ module TOP_tpu_synthesis #(
         .dout(done)
     );
 
-    SRAM #(                 //fifo 포기하고 걍 sram으로 해보자
+    (* DONT_TOUCH = "TRUE" *) SRAM #(                 //fifo 포기하고 걍 sram으로 해보자
         .ADDRESSSIZE(ADDRESSSIZE_fifo),
         .WORDSIZE(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
     ) weight_fifo (
