@@ -10,6 +10,7 @@ TOP tpu module composition
 
 module TOP_tpu_synthesis #(
     parameter ADDRESSSIZE = 10,
+    parameter ADDRESSSIZE_fifo = 2,
     parameter WORDSIZE = 64,
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
@@ -86,7 +87,7 @@ module TOP_tpu_synthesis #(
     );
 
     SRAM #(                 //fifo 포기하고 걍 sram으로 해보자
-        .ADDRESSSIZE(ADDRESSSIZE),
+        .ADDRESSSIZE(ADDRESSSIZE_fifo),
         .WORDSIZE(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
     ) weight_fifo (
         .clk(clk),
