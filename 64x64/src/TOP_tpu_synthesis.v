@@ -22,7 +22,7 @@ module TOP_tpu_synthesis #(
 
 ) (
     input wire clk, rstn, start, we_rl,
-    output wire end_,
+    // output wire end_,
 
     // UB pins
     input wire sram_write_enable,
@@ -142,11 +142,6 @@ module TOP_tpu_synthesis #(
     ) result_reverser(
         .d(result_sync),
         .d_reverse(result_sync_rev)
-    );
-
-    CTRL_state_machine state_coutner(
-        .clk(clk), .rstn(rstn), .start(start),
-        .state_count(state_count), .end_signal(end_)
     );
 
 endmodule

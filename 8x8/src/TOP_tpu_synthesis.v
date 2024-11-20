@@ -74,7 +74,7 @@ module TOP_tpu_synthesis #(
         .clk(clk),
         .write_enable(count4[3]),
         .address(sram_address),
-        .data_in(result_sync),
+        .data_in(result_sync_rev),
         .data_out(sram_result_data_out)
     );
 
@@ -148,4 +148,15 @@ module TOP_tpu_synthesis #(
         .data_setup(result_sync)
     );
 
+    CTRL_result_reverser #(                 // not sequencial but wiring
+        .WORDSIZE(MATRIX_SIZE*PARTIAL_SUM_BW)
+    ) result_reverser(
+        .d(result_sync),
+        .d_reverse(result_sync_rev)
+    );
+
+    CTRL_state_machine state_coutner(
+        .clk(clk), .rstn(rstn), .start(start),
+        .state_count(state_count), .end_signal(end_)
+    );
 endmodule
