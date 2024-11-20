@@ -14,7 +14,7 @@ module SRAM_UnifiedBuffer
     output reg [WORDSIZE-1:0] data_out      
 );
 
-    reg [WORDSIZE-1:0] mem_array [0:(1 << ADDRESSSIZE)-1];
+    (* ram_style = "block" *) reg [WORDSIZE-1:0] mem_array [0:(1 << ADDRESSSIZE)-1];
 
     always @(posedge clk) begin
         if (write_enable) begin
