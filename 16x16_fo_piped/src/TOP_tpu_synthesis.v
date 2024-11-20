@@ -97,7 +97,7 @@ module TOP_tpu_synthesis #(
     );
 
     //fanout critical path divding?
-    dff #(
+    (* dont_touch = "true" *) dff #(
         .WIDTH(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
     ) weight_fo_pipe_dff(
         .clk(clk), .rstn(rstn),
