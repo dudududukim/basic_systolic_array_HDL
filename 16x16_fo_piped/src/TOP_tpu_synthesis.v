@@ -102,7 +102,7 @@ module TOP_tpu_synthesis #(
     ) weight_fo_pipe_dff(
         .clk(clk), .rstn(rstn),
         .d(fifo_data_out), .q(q_fifo_data_out)
-    )
+    );
 
     TOP_systolic_module #(
         .WEIGHT_BW(WEIGHT_BW),             
