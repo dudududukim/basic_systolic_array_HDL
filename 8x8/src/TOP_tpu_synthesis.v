@@ -46,7 +46,7 @@ module TOP_tpu_synthesis #(
 
     
 );
-    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync;
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
     wire [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [3:0] count4;                  // for sensing the results timing
@@ -153,10 +153,5 @@ module TOP_tpu_synthesis #(
     ) result_reverser(
         .d(result_sync),
         .d_reverse(result_sync_rev)
-    );
-
-    CTRL_state_machine state_coutner(
-        .clk(clk), .rstn(rstn), .start(start),
-        .state_count(state_count), .end_signal(end_)
     );
 endmodule
