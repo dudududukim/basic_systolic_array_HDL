@@ -1,0 +1,59 @@
+report_timing \
+    -through [get_nets { \
+        systolic_array/data_set[0] \
+        systolic_array/data_set[1] \
+        systolic_array/data_set[2] \
+        systolic_array/data_set[3] \
+        systolic_array/data_set[4] \
+        systolic_array/data_set[5] \
+        systolic_array/data_set[6] \
+        systolic_array/data_set[7] \
+        systolic_array/data_set[8] \
+        systolic_array/data_set[9] \
+        systolic_array/data_set[10] \
+        systolic_array/data_set[11] \
+        systolic_array/data_set[12] \
+        systolic_array/data_set[13] \
+        systolic_array/data_set[14] \
+        systolic_array/data_set[15] \
+        systolic_array/data_set[16] \
+        systolic_array/data_set[17] \
+        systolic_array/data_set[18] \
+        systolic_array/data_set[19] \
+        systolic_array/data_set[20] \
+        systolic_array/data_set[21] \
+        systolic_array/data_set[22] \
+        systolic_array/data_set[23] \
+    }] \
+    -delay_type min_max \
+    -max_paths 10 \
+    -sort_by group \
+    -input_pins \
+    -routable_nets \
+    -name {[get_nets { \
+        systolic_array/data_set[0] \
+        systolic_array/data_set[1] \
+        systolic_array/data_set[2] \
+        systolic_array/data_set[3] \
+        systolic_array/data_set[4] \
+        systolic_array/data_set[5] \
+        systolic_array/data_set[6] \
+        systolic_array/data_set[7] \
+        systolic_array/data_set[8] \
+        systolic_array/data_set[9] \
+        systolic_array/data_set[10] \
+        systolic_array/data_set[11] \
+        systolic_array/data_set[12] \
+        systolic_array/data_set[13] \
+        systolic_array/data_set[14] \
+        systolic_array/data_set[15] \
+        systolic_array/data_set[16] \
+        systolic_array/data_set[17] \
+        systolic_array/data_set[18] \
+        systolic_array/data_set[19] \
+        systolic_array/data_set[20] \
+        systolic_array/data_set[21] \
+        systolic_array/data_set[22] \
+        systolic_array/data_set[23] \
+    }]} \
+    -file timing_report_DSP.txt
