@@ -26,7 +26,7 @@ module TOP_tpu_synthesis #(
     // UB pins
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
-    // input wire [WORDSIZE-1:0] sram_data_in,
+    input wire [WORDSIZE-1:0] sram_data_in,
     // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
@@ -34,12 +34,10 @@ module TOP_tpu_synthesis #(
     input wire fifo_read_enable,
     // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
-    output wire fifo_empty,
-    output wire fifo_full,
 
     //
     input wire valid_address,
-    input wire [ADDRESSSIZE-1 : 0] sram_result_address,
+    // input wire [ADDRESSSIZE-1 : 0] sram_result_address,
     output wire done
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
@@ -60,7 +58,7 @@ module TOP_tpu_synthesis #(
         .clk(clk),
         .write_enable(sram_write_enable),
         .address(sram_address),
-        .data_in(),
+        .data_in(sram_data_in),
         .data_out(sram_data_out)
     );
 
@@ -94,9 +92,7 @@ module TOP_tpu_synthesis #(
         .write_enable(fifo_write_enable),
         .read_enable(fifo_read_enable),
         .data_in(),
-        .data_out(fifo_data_out),
-        .empty(fifo_empty),
-        .full(fifo_full)
+        .data_out(fifo_data_out)
     );
 
     TOP_systolic_module #(
