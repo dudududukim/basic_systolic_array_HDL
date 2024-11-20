@@ -8,7 +8,7 @@ module PE #(
     input wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_IN,               // partial sum input (19bit in 8x8 MXU)
     input wire signed [WEIGHT_BW-1 : 0] W,                          // weight that stays constant and refreshed with the WE_RL signal
     output wire signed [DATA_IN_BW-1 : 0] DF_COL,                   // column direction data flow (DF_COL)
-    output wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_OUT              // partial sum that flows to right direction
+    (* use_dsp = "yes" *) output wire signed [PARTIAL_SUM_BW-1 : 0] PSUM_OUT              // partial sum that flows to right direction
 );
 
     wire signed [WEIGHT_BW-1 : 0] weight;
