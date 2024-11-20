@@ -44,7 +44,6 @@ module TOP_tpu_synthesis #(
 
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
-    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] q_fifo_data_out;
     wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [4:0] count5;                  // for sensing the results timing
@@ -96,14 +95,6 @@ module TOP_tpu_synthesis #(
         .data_out(fifo_data_out)
     );
 
-    //fanout critical path divding?
-    (* dont_touch = "true" *) dff #(
-        .WIDTH(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
-    ) weight_fo_pipe_dff(
-        .clk(clk), .rstn(rstn),
-        .d(fifo_data_out), .q(q_fifo_data_out)
-    );
-
     TOP_systolic_module #(
         .WEIGHT_BW(WEIGHT_BW),             
         .DATA_BW(DATA_BW),                 
@@ -115,7 +106,7 @@ module TOP_tpu_synthesis #(
         .rstn(rstn),                       
         .we_rl(we_rl),                     // weight reload signal 
         .DIN(data_set),                         // top data flow : MATRIX_SIZE * DATA_BW-bit data input (8byte)
-        .WEIGHTS(q_fifo_data_out),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
+        .WEIGHTS(fifo_data_out),                 // whole weight supply chain : NUM_PE_ROWS * MATRIX_SIZE * WEIGHT_BW-bit weight input (64byte)
         .result(result)                    // NUM_PE_ROWS * PARTIAL_SUM_BW-bit output array (8*19bit)
     );
 

@@ -31,7 +31,8 @@ module TOP_tpu_synthesis #(
 
     // FIFO pins
     input wire fifo_write_enable,
-    input wire fifo_read_enable,
+    input wire [1:0] fifo_address,
+    // input wire fifo_read_enable,
     // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
     // output wire fifo_empty,
@@ -81,20 +82,15 @@ module TOP_tpu_synthesis #(
         .dout(done)
     );
 
-    Weight_FIFO #(
-        .WEIGHT_BW(WEIGHT_BW),
-        .FIFO_DEPTH(FIFO_DEPTH),
-        .NUM_PE_ROWS(NUM_PE_ROWS),
-        .MATRIX_SIZE(MATRIX_SIZE)
+    SRAM #(                 //fifo 포기하고 걍 sram으로 해보자
+        .ADDRESSSIZE(ADDRESSSIZE),
+        .WORDSIZE(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
     ) weight_fifo (
         .clk(clk),
-        .rstn(rstn),
         .write_enable(fifo_write_enable),
-        .read_enable(fifo_read_enable),
+        .address(fifo_address),
         .data_in(),
         .data_out(fifo_data_out)
-        // .empty(fifo_empty),
-        // .full(fifo_full)
     );
 
     TOP_systolic_module #(
