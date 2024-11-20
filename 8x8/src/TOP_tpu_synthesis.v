@@ -35,8 +35,8 @@ module TOP_tpu_synthesis #(
     input wire [1:0] fifo_address,
     // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
-    output wire fifo_empty,
-    output wire fifo_full,
+    // output wire fifo_empty,
+    // output wire fifo_full,
 
     //
     input wire valid_address,
