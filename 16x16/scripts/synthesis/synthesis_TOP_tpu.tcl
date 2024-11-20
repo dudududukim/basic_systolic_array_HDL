@@ -1,7 +1,7 @@
 #
 # STEP#1: define the output directory area.
 #
-set outputDir ../../output/Created_Data/systolic_project_32x32
+set outputDir ../../output/Created_Data/systolic_project_16x16
 file mkdir $outputDir
 create_project proj_1 $outputDir \
   -part xcu250-figd2104-2L-e -force
@@ -19,7 +19,7 @@ source ./file_list.tcl
 add_files -norecurse ../../src/TOP_tpu_synthesis.v
 set_property top TOP_tpu_synthesis [current_fileset]
 update_compile_order -fileset sources_1
-add_files -fileset constrs_1 -norecurse /home/dh/DUHYEON/basic_systolic_array/32x32/scripts/synthesis/constraints.xdc
+add_files -fileset constrs_1 -norecurse /home/dh/DUHYEON/basic_systolic_array/16x16/scripts/synthesis/constraints.xdc
 
 #
 # STEP#3: run synthesis and the default utilization report.
